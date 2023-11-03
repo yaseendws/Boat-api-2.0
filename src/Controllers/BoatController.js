@@ -39,12 +39,16 @@ const UpdateBoat = (req, res) => {
 };
 
 const getAllBoats = (req, res) => {
-  const { vendor_id } = req.query;
+  const { vendor_id,boat_id } = req.query;
   let obj = {};
   if (vendor_id) {
     obj.vendor_id = vendor_id;
   }
-  Boat.find({})
+  if (boat_id) {
+    obj._id = boat_id;
+  }
+  console.log(obj)
+  Boat.find(obj)
     .then((data) => {
       responseHandler(res, data);
     })

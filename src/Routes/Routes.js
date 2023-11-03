@@ -14,7 +14,7 @@ import {
   UpdateBoat,
   getAllBoats,
 } from "../Controllers/BoatController.js";
-import { BookingApi, getBooking } from "../Controllers/BookingController.js";
+import { BookingApi, CancelBooking, getBooking } from "../Controllers/BookingController.js";
 import { imageUpload } from "../Controllers/ImageUpload.js";
 
 const route = express.Router();
@@ -38,6 +38,6 @@ route.route("/updateboat").post(checkToken, UpdateBoat);
 
 //BookingRoutes--------------------------------
 
-route.route("/booking").post(checkToken,BookingApi).get(getBooking)
+route.route("/booking").post(checkToken,BookingApi).get(getBooking).put(checkToken,CancelBooking)
 
 export default route;

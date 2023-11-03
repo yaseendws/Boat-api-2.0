@@ -12,6 +12,12 @@ function getDatesInRange(startDate, endDate) {
   }
   return dates;
 }
+function formatDate(d1) {
+  const date = new Date(d1);
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+}
+
 const BookingApi = async (req, res) => {
   const {
     check_in_date,
@@ -27,19 +33,20 @@ const BookingApi = async (req, res) => {
   } = req.body;
   const { trip, boatId } = req.query;
   let BoatData = await Boat.findOne({ _id: boatId });
+  console.log(BoatData);
   let total = 400;
-  let startDate = "2023-11-28";
-  let endDate = "2023-11-30";
+  let startDate = moment(check_in_date, "DD MM YYYY").format("YYYY-MM-DD");
+  let endDate = moment(check_out_date, "DD MM YYYY").format("YYYY-MM-DD");
   const d1 = new Date(startDate);
   const d2 = new Date(endDate);
-  let arr = getDatesInRange(check_in_date, check_out_date);
+  let arr = getDatesInRange(d1, d2);
   let arr2 = [];
   for (let i = 0; i < arr.length; i++) {
     const element = arr[i];
-    let d = moment(element).format("YYYY-DD-MM");
+    let d = moment(element, "YYYY-MM-DD").format("YYYY-MM-DD");
     arr2.push(d);
   }
-  console.log(arr2);
+  console.log(arr2, "j");
   let tripType = "";
   const { _id } = req.user;
 
@@ -55,7 +62,7 @@ const BookingApi = async (req, res) => {
       }
     }
   }
-  
+
   if (arr2.length == "1") {
     tripType = "fullday";
     let num = BoatData.price["fullday"].price;
@@ -82,7 +89,8 @@ const BookingApi = async (req, res) => {
     errHandler(res, 6, 403);
     return;
   }
-  console.log(moment().date(d1).format("MMMM DD, YYYY"),"dd")
+  let ff = moment(check_out_date).format("YYYY MM DD");
+  console.log(formatDate(check_in_date), "dd");
   console.log(tripType, "trip");
   let data = {
     user_id: _id,
@@ -90,8 +98,10 @@ const BookingApi = async (req, res) => {
     trip_duration:
       arr2.length <= 9 ? "0" + arr2.length : JSON.stringify(arr2.length),
     trip_type: tripType,
-    check_in_date: moment().date(check_in_date).format("MMMM DD, YYYY"),
-    check_out_date: moment().date(check_out_date).format("MMMM DD, YYYY"),
+    check_in_date: moment(check_in_date, "DD MM YYYY").format("MMMM DD, YYYY"),
+    check_out_date: moment(check_out_date, "DD MM YYYY").format(
+      "MMMM DD, YYYY"
+    ),
     is_skipper,
     totalPayment: total,
     check_in_time: "00",
@@ -99,7 +109,8 @@ const BookingApi = async (req, res) => {
     services: services,
     guest_number,
   };
-  console.log(data);
+
+  console.log(check_in_date, "d");
   Booking.create(data)
     .then((Boats) => {
       Boat.findByIdAndUpdate(
@@ -141,16 +152,48 @@ const getBooking = (req, res) => {
 
 const CancelBooking = (req, res) => {
   let { bookingId } = req.query;
-  let DateArr = [];
   Booking.findOne({ _id: bookingId })
     .then((Book) => {
       const d1 = new Date(Book.check_in_date);
       const d2 = new Date(Book.check_out_date);
       let arr = getDatesInRange(d1, d2);
-      console.log(arr)
-      return
+      let arr2 = [];
+      let arr3 = [];
+      for (let i = 0; i < arr.length; i++) {
+        const element = arr[i];
+        let d = moment(element, "YYYY-MM-DD").format("YYYY-MM-DD");
+        arr2.push(d);
+      }
+
       Boat.findOne({ _id: Book.boat_id })
-        .then((boat) => {})
+        .then((boat) => {
+          console.log(boat.booked_dates);
+          if (boat.booked_dates) {
+            for (let i = 0; i < arr2.length; i++) {
+              const element1 = arr2[i];
+              for (let j = 0; j < boat.booked_dates.length; j++) {
+                const element2 = boat.booked_dates[j];
+                if (element1 == element2) {
+                  arr3.push(element1);
+                }
+              }
+            }
+          }
+          const resultArray = boat.booked_dates.filter(
+            (item) => !arr3.includes(item)
+          );
+          console.log(arr3, "j");
+          console.log(resultArray, "j2");
+          Boat.findByIdAndUpdate(
+            boat._id,
+            { booked_dates: resultArray },
+            { new: true }
+          ).then((BookingCancel) => {
+            responseHandler(res,BookingCancel)
+          }).catch(() => {
+            errHandler(res, 5, 403);
+          });
+        })
         .catch(() => {
           errHandler(res, 5, 403);
         });
@@ -160,4 +203,4 @@ const CancelBooking = (req, res) => {
     });
 };
 
-export { BookingApi, getBooking,CancelBooking };
+export { BookingApi, getBooking, CancelBooking };

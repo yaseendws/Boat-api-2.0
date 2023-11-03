@@ -63,7 +63,7 @@ const BoatSchema = mongoose.Schema(
       required: true,
     },
     price: {
-      type: Array,
+      type: Object,
       required: true,
     },
     equipment: {
