@@ -1,7 +1,8 @@
 const listenSocket = (io,socket)=>{
+  
     socket.on('message', (data) => {
         console.log(data);
-        io.emit('message', data.id);
+        io.emit(data.body);
       });
 }
 export {listenSocket}

@@ -9,7 +9,6 @@ import { Server } from "socket.io";
 import {createServer} from "node:http"
 import { listenSocket } from "./Socket/index.js";
 
-
 const PORT = process.env.PORT || 5000
 dotenv.config()
 
@@ -27,7 +26,7 @@ app.use(cors())
 app.use("/api",route)
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected',socket.id);
   listenSocket(io, socket);
 });
 

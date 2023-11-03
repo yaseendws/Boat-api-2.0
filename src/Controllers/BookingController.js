@@ -12,6 +12,7 @@ function getDatesInRange(startDate, endDate) {
   }
   return dates;
 }
+
 function formatDate(d1) {
   const date = new Date(d1);
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -19,18 +20,8 @@ function formatDate(d1) {
 }
 
 const BookingApi = async (req, res) => {
-  const {
-    check_in_date,
-    check_out_date,
-    check_in_time,
-    check_out_time,
-    is_skipper,
-    guest_number,
-    trip_type,
-    services,
-    totalPayment,
-    trip_duration,
-  } = req.body;
+  const { check_in_date, check_out_date, is_skipper, guest_number, services } =
+    req.body;
   const { trip, boatId } = req.query;
   let BoatData = await Boat.findOne({ _id: boatId });
   console.log(BoatData);
@@ -108,6 +99,7 @@ const BookingApi = async (req, res) => {
     check_out_time: "00",
     services: services,
     guest_number,
+    custom_offer_id: trip == "custom" ? true : false,
   };
 
   console.log(check_in_date, "d");
@@ -124,7 +116,10 @@ const BookingApi = async (req, res) => {
         .catch(() => {
           errHandler(res, 5, 403);
         });
-      responseHandler(res, Boats);
+      responseHandler(res, {
+        Boats,
+        text: `BOAT Bali - Catana Bali Catspace, DATES ${check_in_date} 07:00 AM ${check_out_date} 06:00 AM, Hello Adrew, I am interested in your catamaran, is it still available? If yes, can you please send me a offer? Thank you AHMED`,
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -188,11 +183,17 @@ const CancelBooking = (req, res) => {
             boat._id,
             { booked_dates: resultArray },
             { new: true }
-          ).then((BookingCancel) => {
-            responseHandler(res,BookingCancel)
-          }).catch(() => {
-            errHandler(res, 5, 403);
-          });
+          )
+            .then((BookingCancel) => {
+              Booking.findByIdAndDelete(Book._id).then(()=>{
+                responseHandler(res, BookingCancel);
+              }).catch(() => {
+                errHandler(res, "deleting was not sucsse", 403);
+              });
+            })
+            .catch(() => {
+              errHandler(res, 5, 403);
+            });
         })
         .catch(() => {
           errHandler(res, 5, 403);
