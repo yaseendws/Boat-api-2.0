@@ -40,4 +40,6 @@ route.route("/updateboat").post(checkToken, UpdateBoat);
 
 route.route("/booking").post(checkToken,BookingApi).get(getBooking).put(checkToken,CancelBooking)
 
+
+
 export default route;
