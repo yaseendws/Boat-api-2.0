@@ -60,7 +60,7 @@ return(
 
 
 const RegisterdUser = async (req, res) => {
-  let { name, email, password, phoneNumber } = req.body;
+  let { name, email, password, phoneNumber,notificationToken } = req.body;
   let profilePhoto = "https://placehold.co/100x100?text=";
   if (User && (await User.findOne({ email }))) {
     errHandler(res, 1, 403);
@@ -94,6 +94,7 @@ const RegisterdUser = async (req, res) => {
     password,
     phoneNumber,
     profilePhoto: profilePhoto + profileName,
+    notificationToken
   })
     .then(async (data) => {
       let {
@@ -105,6 +106,7 @@ const RegisterdUser = async (req, res) => {
         createdAt,
         role,
         verified,
+        notificationToken
       } = data;
       let token = jsonwebtoken.sign(
         {
@@ -116,6 +118,7 @@ const RegisterdUser = async (req, res) => {
           role,
           phoneNumber,
           verified,
+          notificationToken
         },
         process.env.SECRET_KEY
       );
@@ -142,6 +145,7 @@ const RegisterdUser = async (req, res) => {
             phoneNumber,
             role,
             verified,
+            notificationToken
           });
         })
       }
@@ -170,6 +174,7 @@ const LoginUser = (req, res) => {
         createdAt,
         role,
         verified,
+        notificationToken
       } = data;
       let token = jsonwebtoken.sign(
         {
@@ -181,6 +186,7 @@ const LoginUser = (req, res) => {
           createdAt,
           role,
           verified,
+          notificationToken
         },
         process.env.SECRET_KEY
       );
@@ -194,6 +200,7 @@ const LoginUser = (req, res) => {
         phoneNumber,
         role,
         verified,
+        notificationToken
       });
     })
     .catch((err) => {
@@ -237,6 +244,7 @@ const ForgotPassword = async (req, res) => {
           createdAt,
           role,
           verified,
+          notificationToken
         } = data;
         let token = jsonwebtoken.sign(
           {
@@ -248,6 +256,7 @@ const ForgotPassword = async (req, res) => {
             role,
             phoneNumber,
             verified,
+            notificationToken
           },
           process.env.SECRET_KEY
         );
@@ -261,6 +270,7 @@ const ForgotPassword = async (req, res) => {
           role,
           verified,
           token,
+          notificationToken
         });
       })
       .catch((err) => {
@@ -291,6 +301,7 @@ const NewPassword = async (req, res) => {
         createdAt,
         role,
         verified,
+        notificationToken
       } = data;
       let token = jsonwebtoken.sign(
         {
@@ -302,6 +313,7 @@ const NewPassword = async (req, res) => {
           role,
           phoneNumber,
           verified,
+          notificationToken
         },
         process.env.SECRET_KEY
       );
@@ -315,6 +327,7 @@ const NewPassword = async (req, res) => {
         role,
         verified,
         token,
+        notificationToken
       });
     }
   );
@@ -344,6 +357,7 @@ const VerifyOtp = (req, res) => {
               createdAt,
               role,
               verified,
+              notificationToken
             } = data;
             let token = jsonwebtoken.sign(
               {
@@ -355,6 +369,7 @@ const VerifyOtp = (req, res) => {
                 role,
                 phoneNumber,
                 verified,
+                notificationToken
               },
               process.env.SECRET_KEY
             );
@@ -368,6 +383,7 @@ const VerifyOtp = (req, res) => {
               role,
               verified,
               token,
+              notificationToken
             });
             Otp.findByIdAndDelete(dataotp[0]._id)
               .then((datao) => {
@@ -402,6 +418,7 @@ const getProfile = (req, res) => {
         createdAt,
         role,
         verified,
+        notificationToken
       } = data;
       let token = jsonwebtoken.sign(
         {
@@ -413,6 +430,7 @@ const getProfile = (req, res) => {
           role,
           phoneNumber,
           verified,
+          notificationToken
         },
         process.env.SECRET_KEY
       );
@@ -426,6 +444,7 @@ const getProfile = (req, res) => {
         role,
         verified,
         token,
+        notificationToken
       });
     })
     .catch(() => {

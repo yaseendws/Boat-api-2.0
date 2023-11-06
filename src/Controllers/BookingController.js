@@ -13,12 +13,6 @@ function getDatesInRange(startDate, endDate) {
   return dates;
 }
 
-function formatDate(d1) {
-  const date = new Date(d1);
-  const options = { year: "numeric", month: "long", day: "numeric" };
-  return date.toLocaleDateString("en-US", options);
-}
-
 const BookingApi = async (req, res) => {
   const { check_in_date, check_out_date, is_skipper, guest_number, services } =
     req.body;
@@ -81,7 +75,6 @@ const BookingApi = async (req, res) => {
     return;
   }
   let ff = moment(check_out_date).format("YYYY MM DD");
-  console.log(formatDate(check_in_date), "dd");
   console.log(tripType, "trip");
   let data = {
     user_id: _id,
