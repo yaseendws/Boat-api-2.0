@@ -50,7 +50,7 @@ const BookingSchema = mongoose.Schema(
       default: false,
     },
     custom_offer_id: {
-      type: String,
+      type: Boolean,
     },
     expire_offer: {
       type: String,

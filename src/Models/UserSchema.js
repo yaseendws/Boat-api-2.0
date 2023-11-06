@@ -30,6 +30,10 @@ const UserSchema = mongoose.Schema(
     verified:{
       type:Boolean,
       default:false
+    },
+    notificationToken:{
+      type:String,
+      required:true
     }
   },
   {
