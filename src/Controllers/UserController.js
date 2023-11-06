@@ -270,6 +270,7 @@ const ForgotPassword = async (req, res) => {
           console.log("Error occurred:", error.message);
         } else {
           console.log(info);
+        Otp.deleteMany({userId:_id}).then(()=>{
           Otp.create({ userId: _id, otp: otp }).then(()=>{
             responseHandler(res, {
               name,
@@ -284,6 +285,7 @@ const ForgotPassword = async (req, res) => {
               notificationToken
             });
           })
+        })
         }
       });
       })
