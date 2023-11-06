@@ -227,8 +227,6 @@ const ForgotPassword = async (req, res) => {
   }
 
   User.findOne({ email }).then((userData) => {
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    sendMail(email, { name: userData.name, otp }, userData._id);
     User.findByIdAndUpdate(
       { _id: userData._id },
       { verified: false },
@@ -260,6 +258,34 @@ const ForgotPassword = async (req, res) => {
           },
           process.env.SECRET_KEY
         );
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const mailOptions = {
+          from: "yaseendws@gmail.com",
+          to: email,
+          subject: "These was recived by Boat App || Please verify your self",
+          html: SendHtml(name,otp),
+        };
+       transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Error occurred:", error.message);
+        } else {
+          console.log(info);
+          Otp.create({ userId: _id, otp: otp }).then(()=>{
+            responseHandler(res, {
+              name,
+              email,
+              profilePhoto,
+              _id,
+              createdAt,
+              token,
+              phoneNumber,
+              role,
+              verified,
+              notificationToken
+            });
+          })
+        }
+      });
         responseHandler(res, {
           name,
           email,
