@@ -25,7 +25,7 @@ route.route("/image").post(upload.single("file"), imageUpload);
 
 route.route("/registerd").post(RegisterdUser);
 route.route("/login").post(LoginUser);
-route.route("/user").put(checkToken, MakeVendor).get(getProfile)
+route.route("/user").put(checkToken, MakeVendor).get(checkToken,getProfile)
 route.route("/verify").post(checkToken, VerifyOtp);
 route.route("/forgot").post(ForgotPassword);
 route.route("/newpassword").post(checkToken,NewPassword);

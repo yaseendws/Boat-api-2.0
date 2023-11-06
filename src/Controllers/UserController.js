@@ -458,8 +458,8 @@ const VerifyOtp = (req, res) => {
 };
 
 const getProfile = (req, res) => {
-  const { id } = req.query;
-  User.findOne({ _id: id })
+  const { _idid } = req.user;
+  User.findOne({ _id: _id })
     .then((data) => {
       let {
         name,
