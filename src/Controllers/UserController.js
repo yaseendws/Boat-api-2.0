@@ -163,7 +163,7 @@ const LoginUser = (req, res) => {
     errHandler(res, 2, 403);
     return;
   }
-  User.findOne({ email })
+  User.findOne({ email,password })
     .then((data) => {
       let {
         name,
