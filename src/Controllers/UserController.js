@@ -190,18 +190,53 @@ const LoginUser = (req, res) => {
         },
         process.env.SECRET_KEY
       );
-      responseHandler(res, {
-        name,
-        email,
-        profilePhoto,
-        _id,
-        createdAt,
-        token,
-        phoneNumber,
-        role,
-        verified,
-        notificationToken
+      if (!verified) {
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const mailOptions = {
+          from: "yaseendws@gmail.com",
+          to: email,
+          subject: "These was recived by Boat App || Please verify your self",
+          html: SendHtml(name,otp),
+        };
+       transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Error occurred:", error.message);
+        } else {
+          console.log(info);
+        Otp.deleteMany({userId:_id}).then((d)=>{
+          console.log(d)
+          Otp.create({ userId: _id, otp: otp }).then(()=>{
+            responseHandler(res, {
+              name,
+              email,
+              profilePhoto,
+              _id,
+              createdAt,
+              token,
+              phoneNumber,
+              role,
+              verified,
+              notificationToken
+            });
+          })
+        })
+        }
       });
+      }else{
+        responseHandler(res, {
+          name,
+          email,
+          profilePhoto,
+          _id,
+          createdAt,
+          token,
+          phoneNumber,
+          role,
+          verified,
+          notificationToken
+        });
+      }
+      
     })
     .catch((err) => {
       errHandler(res, 5, 409);
@@ -270,7 +305,8 @@ const ForgotPassword = async (req, res) => {
           console.log("Error occurred:", error.message);
         } else {
           console.log(info);
-        Otp.deleteMany({userId:_id}).then(()=>{
+        Otp.deleteMany({userId:_id}).then((d)=>{
+          console.log(d)
           Otp.create({ userId: _id, otp: otp }).then(()=>{
             responseHandler(res, {
               name,
