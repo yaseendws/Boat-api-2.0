@@ -6,14 +6,14 @@ const responseHandler = (res,data) =>{
 }
 const errHandler = (res,err,status) =>{
     console.log(typeof err)
-    res.status(status)
     if(typeof err=="string"){
+        throw new err
         res.json({err})
-        throw new err
     }else{
-        res.json({err:errList[err]})
         throw new err
+        res.json({err:errList[err]})
     }
+    res.status(status)
 }
 
 export {responseHandler,errHandler}
