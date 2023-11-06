@@ -6,12 +6,12 @@ const responseHandler = (res,data) =>{
 }
 const errHandler = (res,err,status) =>{
     console.log(typeof err)
-    res.status(status)
+    // res.status(status)
     if(typeof err=="string"){
-        res.json({err})
+        // res.json({err})
         throw new Error(err)
     }else{
-        res.json({err:errList[err]})
+        // res.json({err:errList[err]})
         throw new Error(errList[err]) 
     }
 }
