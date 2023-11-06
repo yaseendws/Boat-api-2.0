@@ -286,18 +286,6 @@ const ForgotPassword = async (req, res) => {
           })
         }
       });
-        responseHandler(res, {
-          name,
-          email,
-          profilePhoto,
-          phoneNumber,
-          _id,
-          createdAt,
-          role,
-          verified,
-          token,
-          notificationToken
-        });
       })
       .catch((err) => {
         errHandler(res, 5, 409);
