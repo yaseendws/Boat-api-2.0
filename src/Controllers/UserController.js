@@ -158,13 +158,13 @@ const RegisterdUser = async (req, res) => {
 };
 
 const LoginUser = (req, res) => {
-  let { email, password } = req.body;
+  let { email, password,userToken } = req.body;
   if (password.trim().length < 8) {
     errHandler(res, 2, 403);
     return;
   }
   User.findOne({ email,password })
-    .then((data) => {
+    .then(async(data) => {
       let {
         name,
         email,
@@ -176,6 +176,7 @@ const LoginUser = (req, res) => {
         verified,
         notificationToken
       } = data;
+     await User.findByIdAndUpdate(_id,{notificationToken:userToken})
       let token = jsonwebtoken.sign(
         {
           name,

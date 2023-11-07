@@ -4,5 +4,10 @@ const listenSocket = (io,socket)=>{
         console.log(data);
         io.emit(data.body);
       });
+      socket.on('private_message', data => {
+        socket.to(data.targetUserId).emit('private_message', data.message);
+        console.log(data.targetUserId)
+      });
 }
 export {listenSocket}
+
