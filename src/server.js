@@ -27,7 +27,22 @@ app.use("/api",route)
 
 io.on('connection', (socket) => {
   console.log('a user connected',socket.id);
-  listenSocket(io, socket);
+  let users =[]
+  // listenSocket(io, socket);
+  socket.on('connected', (id) => {
+    console.log(id,"gg")
+    users.push(socket.id)
+  });
+  socket.on('message', (data) => {
+    console.log(data);
+    io.emit(data.body);
+  });
+  socket.on('private_message', (data) => {
+    // let body = JSON.parse(data.body)
+    console.log(data.id,"dd")
+    socket.to(data.id).emit('prmessage', data.message);
+    // console.log(data.id)
+  });
 });
 
 if (process.env.ENV === 'development') {
