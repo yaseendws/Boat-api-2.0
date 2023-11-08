@@ -7,7 +7,7 @@ const imageUpload = async (req, res) => {
     console.log(req.body, "ff");
     console.log(req.file ? req.file : null);
     const metadata = {
-      contentType: req.file.type,
+      contentType: req.file.mimetype,
     };
     const storageRef = ref(
       Storage,
