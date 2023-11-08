@@ -15,7 +15,7 @@ const imageUpload = async (req, res) => {
     );
     console.log(storageRef);
     //     const bytes = new Uint8Array([0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x21]);
-    await uploadBytesResumable(storageRef, req.file.uri, metadata).then(
+    await uploadBytesResumable(storageRef, req.file.buffer, metadata).then(
       (snap) => {
         console.log("success");
         getDownloadURL(storageRef).then((url) => {
